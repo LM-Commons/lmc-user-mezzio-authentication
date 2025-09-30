@@ -1,0 +1,168 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Lmc\User\Authentication\Adapter;
+
+use Laminas\Authentication\Result as AuthenticationResult;
+use Lmc\User\Authentication\Options\Options;
+use Lmc\User\Repository\AdapterInterface;
+use Lmc\User\Repository\UserInterface;
+//use LmcUser\Entity\UserInterface;
+use LmcUser\Mapper\UserInterface as UserMapperInterface;
+
+use Mezzio\Session\SessionInterface;
+use Mezzio\Session\SessionMiddleware;
+use function array_shift;
+use function count;
+use function explode;
+use function in_array;
+use function is_object;
+use function password_hash;
+use function password_verify;
+
+use const PASSWORD_BCRYPT;
+
+class Db extends AbstractAdapter
+{
+    /** @var UserMapperInterface */
+    protected $mapper;
+
+    /** @var callable|null  */
+    protected $credentialPreprocessor;
+
+    public function __construct(
+        private AdapterInterface $adapter,
+        private Options $options,
+    ) {
+    }
+
+    /**
+     * Called when user id logged out
+     */
+    public function logout(AdapterChainEvent $event): void
+    {
+        $this->getStorage()->clear();
+    }
+
+    /**
+     * Called when authentication adapter is reset
+     */
+    public function reset(AdapterChainEvent $event): void
+    {
+        $this->getStorage()->clear();
+    }
+
+    public function authenticate(AdapterChainEvent $event): bool
+    {
+        if ($this->isSatisfied()) {
+            $storage = $this->getStorage()->read();
+            $event->setIdentity($storage['identity'])
+                ->setCode(AuthenticationResult::SUCCESS)
+                ->setMessages(['Authentication successful.']);
+            return true;
+        }
+
+        $params     = $event->getRequest()->getQueryParams();
+        $identity   = $params['identity'] ?? null;
+        $credential = $params['credential'] ?? null;
+        $credential = $this->preProcessCredential($credential);
+
+        /**
+         * @var UserInterface|null $userObject
+         */
+        $userObject = null;
+
+        // Cycle through the configured identity sources and test each
+        $fields = $this->options->getAuthIdentityFields();
+        while (! is_object($userObject) && count($fields) > 0) {
+            $mode = array_shift($fields);
+
+            switch ($mode) {
+                case 'username':
+                    $userObject = $this->adapter->findByUsername($identity);
+                    break;
+                case 'email':
+                    $userObject = $this->adapter->findByEmail($identity);
+                    break;
+            }
+        }
+
+        if (! $userObject) {
+            $event->setCode(AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND)
+                ->setMessages(['A record with the supplied identity could not be found.']);
+            $this->setSatisfied(false);
+            return false;
+        }
+
+        if ($this->options->getEnableUserState()) {
+            // Don't allow user to login if state is not in allowed list
+            if (! in_array($userObject->getState(), $this->options->getAllowedLoginStates())) {
+                $event->setCode(AuthenticationResult::FAILURE_UNCATEGORIZED)
+                    ->setMessages(['A record with the supplied identity is not active.']);
+                $this->setSatisfied(false);
+                return false;
+            }
+        }
+
+//        $bcrypt = new Bcrypt();
+//        $bcrypt->setCost($this->getOptions()->getPasswordCost());
+
+        if (! password_verify($credential, $userObject->getPassword())) {
+            // Password does not match
+            $event->setCode(AuthenticationResult::FAILURE_CREDENTIAL_INVALID)
+                ->setMessages(['Supplied credential is invalid.']);
+            $this->setSatisfied(false);
+            return false;
+        }
+
+        // regen the session
+        $request = $event->getRequest();
+        $session = $request->getAttribute(SessionMiddleware::class);
+        if ($session instanceof SessionInterface) {
+            $session->regenerate();
+        }
+
+        // Success!
+        $event->setIdentity($userObject->getIdentity());
+        // Update user's password hash if the cost parameter has changed
+        $this->updateUserPasswordHash($userObject, $credential);
+        $this->setSatisfied(true);
+        $storage             = $this->getStorage()->read();
+        $storage['identity'] = $event->getIdentity();
+        $this->getStorage()->write($storage);
+        $event->setCode(AuthenticationResult::SUCCESS)
+            ->setMessages(['Authentication successful.']);
+        return true;
+    }
+
+    protected function updateUserPasswordHash(UserInterface $userObject, string $password): void
+    {
+        $hash = explode('$', $userObject->getPassword());
+        if ($hash[2] === (string) $this->options->getPasswordCost()) {
+            return;
+        }
+        $userObject->setPassword(password_hash(
+            $password,
+            PASSWORD_BCRYPT,
+            [
+                'cost' => $this->options->getPasswordCost(),
+            ]
+        ));
+        $this->adapter->update($userObject);
+    }
+
+    public function preProcessCredential($credential): mixed
+    {
+        if (null !== $this->credentialPreprocessor) {
+            return ($this->credentialPreprocessor)($credential);
+        }
+        return $credential;
+    }
+
+    public function setCredentialPreprocessor(callable $credentialPreprocessor): self
+    {
+        $this->credentialPreprocessor = $credentialPreprocessor;
+        return $this;
+    }
+}
