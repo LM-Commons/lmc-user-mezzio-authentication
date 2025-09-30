@@ -7,6 +7,7 @@ namespace Lmc\User\Authentication;
 use Laminas\Authentication\AuthenticationService;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\UserInterface;
+use Mezzio\Session\SessionMiddleware;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,6 +28,7 @@ readonly class Authentication implements AuthenticationInterface
      */
     public function authenticate(ServerRequestInterface $request): ?UserInterface
     {
+        $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
         if (! $this->authenticationService->hasIdentity()) {
             return null;
         }
