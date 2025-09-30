@@ -43,7 +43,8 @@ class AuthenticationFactory
         return new Authentication(
             $auth,
             $responseFactory,
-            $redirectUriProvider->getRedirectUri()
+//            $redirectUriProvider->getRedirectUri()
+            '/auth/login'
         );
     }
 }
