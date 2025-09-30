@@ -7,7 +7,6 @@ namespace Lmc\User\Authentication;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Authentication\Storage\StorageInterface;
-use Mezzio\Session\SessionInterface;
 use Psr\Container\ContainerInterface;
 
 class AuthenticationServiceFactory
