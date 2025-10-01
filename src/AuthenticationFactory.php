@@ -32,13 +32,14 @@ class AuthenticationFactory
         $redirectUriProvider = $container->has(RedirectUriProviderInterface::class)
             ? $container->get(RedirectUriProviderInterface::class)
             : null;
-
+/*
         if (null === $redirectUriProvider) {
             throw new InvalidConfigException(sprintf(
                 'The %s service is missing',
                 RedirectUriProviderInterface::class
             ));
         }
+*/
         /** @var RedirectUriProviderInterface $redirectUriProvider */
         return new Authentication(
             $auth,
