@@ -21,8 +21,9 @@ class Db implements StorageInterface
 
     public function __construct(
         private readonly AdapterInterface $adapter,
-        private readonly StorageInterface $storage
+        SessionInterface $session = null
     ) {
+        $this->session = $session;
     }
 
     public function setSession(SessionInterface $session): void
@@ -35,14 +36,10 @@ class Db implements StorageInterface
      */
     public function isEmpty(): bool
     {
-        $storage = $this->session->get(Session::NAMESPACE_DEFAULT);
-        if (null === $storage) {
+        if (!$this->session->has(Session::NAMESPACE_DEFAULT)) {
             return true;
         }
-        if ($this->storage->isEmpty()) {
-            return true;
-        }
-        $identity = $this->storage->read();
+        $identity = $this->session->get(Session::NAMESPACE_DEFAULT, null);
         if ($identity === null) {
             $this->clear();
             return true;
@@ -58,9 +55,10 @@ class Db implements StorageInterface
         if (null !== $this->resolvedIdentity) {
             return $this->resolvedIdentity;
         }
-        $identity = $this->storage->read();
+        $identity = $this->session->get(Session::NAMESPACE_DEFAULT, null);
         if (is_int($identity) || is_scalar($identity)) {
-            return $this->adapter->findById($identity);
+            $identity = $this->adapter->findById($identity);
+            $this->resolvedIdentity = $identity;
         }
         return $this->resolvedIdentity;
     }
@@ -71,7 +69,7 @@ class Db implements StorageInterface
     public function write($contents)
     {
         $this->resolvedIdentity = null;
-        $this->storage->write($contents);
+        $this->session->set(Session::NAMESPACE_DEFAULT, $contents);
     }
 
     /**
@@ -80,6 +78,6 @@ class Db implements StorageInterface
     public function clear()
     {
         $this->resolvedIdentity = null;
-        $this->storage->clear();
+        $this->session->unset(Session::NAMESPACE_DEFAULT);
     }
 }
