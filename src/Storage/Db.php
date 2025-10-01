@@ -17,7 +17,7 @@ class Db implements StorageInterface
 {
     protected ?UserInterface $resolvedIdentity = null;
 
-    protected SessionInterface $session;
+    protected ?SessionInterface $session;
 
     public function __construct(
         private readonly AdapterInterface $adapter,
