@@ -98,7 +98,7 @@ class Db extends AbstractAdapter implements ListenerAggregateInterface
             // Don't allow user to login if state is not in allowed list
             if (! in_array($userObject->getState(), $this->options->getAllowedLoginStates())) {
                 $event->setCode(AuthenticationResult::FAILURE_UNCATEGORIZED)
-                    ->setMessages(['The record with the supplied identity is not active.']);
+                    ->setMessages(['The user is not allowed to login']);
                 $this->setSatisfied(false);
                 return false;
             }
