@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Lmc\User\Authentication\Adapter;
 
 use Laminas\Authentication\Result as AuthenticationResult;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
 use Lmc\User\Authentication\Options\Options;
 use Lmc\User\Repository\AdapterInterface;
 use Lmc\User\Repository\UserInterface;
 //use LmcUser\Entity\UserInterface;
-use LmcUser\Mapper\UserInterface as UserMapperInterface;
-
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
+
 use function array_shift;
 use function count;
 use function explode;
@@ -23,10 +24,8 @@ use function password_verify;
 
 use const PASSWORD_BCRYPT;
 
-class Db extends AbstractAdapter
+class Db extends AbstractAdapter implements ListenerAggregateInterface
 {
-    /** @var UserMapperInterface */
-    protected $mapper;
 
     /** @var callable|null  */
     protected $credentialPreprocessor;
@@ -164,5 +163,17 @@ class Db extends AbstractAdapter
     {
         $this->credentialPreprocessor = $credentialPreprocessor;
         return $this;
+    }
+
+    public function attach(EventManagerInterface $events, $priority = 1)
+    {
+        $listeners[] = $events->attach('authenticate', [$this, 'authenticate'], $priority);
+        $listeners[] = $events->attach('logout', [$this, 'logout'], $priority);
+        $listeners[] = $events->attach('reset', [$this, 'reset'], $priority);
+
+    }
+
+    public function detach(EventManagerInterface $events)
+    {
     }
 }
