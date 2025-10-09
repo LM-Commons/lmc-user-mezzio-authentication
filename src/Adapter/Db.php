@@ -62,7 +62,7 @@ class Db extends AbstractAdapter implements ListenerAggregateInterface
             return true;
         }
 
-        $params     = $event->getRequest()->getQueryParams();
+        $params     = $event->getRequest()->getParsedBody();
         $identity   = $params['identity'] ?? null;
         $credential = $params['credential'] ?? null;
         $credential = $this->preProcessCredential($credential);
