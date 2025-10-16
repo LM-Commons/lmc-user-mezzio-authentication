@@ -11,7 +11,6 @@ use Lmc\User\Authentication\ConfigProvider;
 use Lmc\User\Authentication\Options\Options;
 use Lmc\User\Repository\AdapterInterface;
 use Lmc\User\Repository\UserInterface;
-//use LmcUser\Entity\UserInterface;
 use Mezzio\Session\RetrieveSession;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
@@ -28,7 +27,7 @@ use function password_verify;
 
 use const PASSWORD_BCRYPT;
 
-class Db extends AbstractAdapter implements ListenerAggregateInterface
+class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
 {
     /** @var callable|null  */
     protected $credentialPreprocessor;
