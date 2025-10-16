@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Lmc\User\Authentication\Adapter;
 
+use Laminas\Authentication\Exception\ExceptionInterface;
 use Laminas\Authentication\Storage\Session;
 use Laminas\Authentication\Storage\StorageInterface;
 use Lmc\User\Authentication\ConfigProvider;
-use Mezzio\Session\RetrieveSession;
 use Mezzio\Session\SessionInterface;
 
-abstract class AbstractAdapter implements ChainableAdapterInterface
+abstract class AbstractChainableAdapter implements ChainableAdapterInterface
 {
     protected ?StorageInterface $storage = null;
 
-    protected SessionInterface $session;
+    protected ?\Mezzio\Session\SessionInterface $session = null;
 
-    public function setSession(SessionInterface $session): void
+    protected function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
@@ -38,21 +38,23 @@ abstract class AbstractAdapter implements ChainableAdapterInterface
 
     /**
      * Check if this adapter is satisfied or not
+     *
+     * @throws ExceptionInterface
      */
     public function isSatisfied(): bool
     {
-        /** @var array $storage */
-        $storage = $this->session->get(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
+        $storage = $this->getStorage()->read();
         return isset($storage['is_satisfied']) && true === $storage['is_satisfied'];
     }
 
     /**
      * Set if this adapter is satisfied or not
      */
-    public function setSatisfied(bool $bool = true): AbstractAdapter
+    public function setSatisfied(bool $bool = true): AbstractChainableAdapter
     {
+        $storage                 = $this->getStorage()->read() ?: [];
         $storage['is_satisfied'] = $bool;
-        $this->session->set(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE, $storage);
+        $this->getStorage()->write($storage);
         return $this;
     }
 }

@@ -7,14 +7,18 @@ namespace Lmc\User\Authentication\Adapter;
 use Laminas\Authentication\Result as AuthenticationResult;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ListenerAggregateInterface;
+use Lmc\User\Authentication\ConfigProvider;
 use Lmc\User\Authentication\Options\Options;
 use Lmc\User\Repository\AdapterInterface;
 use Lmc\User\Repository\UserInterface;
 //use LmcUser\Entity\UserInterface;
+use Mezzio\Session\RetrieveSession;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
 
 use function array_shift;
+use function assert;
 use function count;
 use function explode;
 use function in_array;
@@ -26,13 +30,12 @@ use const PASSWORD_BCRYPT;
 
 class Db extends AbstractAdapter implements ListenerAggregateInterface
 {
-
     /** @var callable|null  */
     protected $credentialPreprocessor;
 
     public function __construct(
-        private AdapterInterface $adapter,
-        private Options $options,
+        private readonly AdapterInterface $adapter,
+        private readonly Options $options,
     ) {
     }
 
@@ -41,7 +44,11 @@ class Db extends AbstractAdapter implements ListenerAggregateInterface
      */
     public function logout(AdapterChainEvent $event): void
     {
-        $this->getStorage()->clear();
+        $request = $event->getRequest();
+        assert($request instanceof ServerRequestInterface);
+        $session = RetrieveSession::fromRequest($request);
+        $this->setSession($session);
+        $this->clearStorage($session);
     }
 
     /**
@@ -49,22 +56,38 @@ class Db extends AbstractAdapter implements ListenerAggregateInterface
      */
     public function reset(AdapterChainEvent $event): void
     {
-        $this->getStorage()->clear();
+//        $this->getStorage()->clear();
     }
 
     public function authenticate(AdapterChainEvent $event): bool
     {
+        $request = $event->getRequest();
+        assert($request instanceof ServerRequestInterface);
+        /** @var SessionInterface $session */
+        $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+        $this->setSession($session);
+
         if ($this->isSatisfied()) {
-            $storage = $this->getStorage()->read();
+            /** @var array $storage */
+            $storage = $this->session->get(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
             $event->setIdentity($storage['identity'])
                 ->setCode(AuthenticationResult::SUCCESS)
                 ->setMessages(['Authentication successful.']);
             return true;
         }
 
-        $params     = $event->getRequest()->getParsedBody();
+        $params     = $request->getParsedBody();
+        /** @var ?string $identity */
         $identity   = $params['identity'] ?? null;
+        /** @var ?string $credential */
         $credential = $params['credential'] ?? null;
+
+        if (null === $credential || null === $identity) {
+            $event->setCode(AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND)
+                ->setMessages(['Invalid username or password']);
+            $this->setSatisfied(false);
+            return false;
+        }
         $credential = $this->preProcessCredential($credential);
 
         /**
@@ -104,9 +127,6 @@ class Db extends AbstractAdapter implements ListenerAggregateInterface
             }
         }
 
-//        $bcrypt = new Bcrypt();
-//        $bcrypt->setCost($this->getOptions()->getPasswordCost());
-
         if (! password_verify($credential, $userObject->getPassword())) {
             // Password does not match
             $event->setCode(AuthenticationResult::FAILURE_CREDENTIAL_INVALID)
@@ -127,9 +147,10 @@ class Db extends AbstractAdapter implements ListenerAggregateInterface
         // Update user's password hash if the cost parameter has changed
         $this->updateUserPasswordHash($userObject, $credential);
         $this->setSatisfied(true);
-        $storage             = $this->getStorage()->read();
+        /** @var array $storage */
+        $storage = $this->session->get(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
         $storage['identity'] = $event->getIdentity();
-        $this->getStorage()->write($storage);
+        $this->session->set(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE, $storage);
         $event->setCode(AuthenticationResult::SUCCESS)
             ->setMessages(['Authentication successful.']);
         return true;
@@ -170,10 +191,14 @@ class Db extends AbstractAdapter implements ListenerAggregateInterface
         $listeners[] = $events->attach('authenticate', [$this, 'authenticate'], $priority);
         $listeners[] = $events->attach('logout', [$this, 'logout'], $priority);
         $listeners[] = $events->attach('reset', [$this, 'reset'], $priority);
-
     }
 
     public function detach(EventManagerInterface $events)
     {
+    }
+
+    protected function clearStorage(SessionInterface $session): void
+    {
+        $session->unset(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
     }
 }

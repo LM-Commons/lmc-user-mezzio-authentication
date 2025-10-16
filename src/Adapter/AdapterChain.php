@@ -19,7 +19,7 @@ use function is_array;
 use function is_object;
 use function sprintf;
 
-class AdapterChain implements AdapterInterface
+class AdapterChain implements AdapterInterface, AdapterChainInterface
 {
     use EventManagerAwareTrait;
 
@@ -27,18 +27,15 @@ class AdapterChain implements AdapterInterface
 
     /**
      * @inheritDoc
-     * @throws ExceptionInterface
      */
     public function authenticate(): Result
     {
         $event  = $this->getEvent();
-        $result = new Result(
+        return new Result(
             $event->getCode() ?? Result::FAILURE_UNCATEGORIZED,
             $event->getIdentity(),
             $event->getMessages()
         );
-        $this->resetAdapters();
-        return $result;
     }
 
     public function prepareForAuthentication(RequestInterface $request): ResponseInterface|bool
@@ -85,7 +82,7 @@ class AdapterChain implements AdapterInterface
     /**
      * @throws ExceptionInterface
      */
-    public function resetAdapters(): AdapterChain
+    public function resetAdapters(RequestInterface $request): AdapterChain
     {
         $sharedManager = $this->getEventManager()->getSharedManager();
 
@@ -101,15 +98,17 @@ class AdapterChain implements AdapterInterface
         }
         $event = $this->getEvent();
         $event->setName('reset');
+        $event->setRequest($request);
         $this->getEventManager()->triggerEvent($event);
         return $this;
     }
 
-    public function logoutAdapters(): AdapterChain
+    public function logoutAdapters(RequestInterface $request): AdapterChain
     {
         //Adapters might need to perform additional cleanup after logout
         $event = $this->getEvent();
         $event->setName('logout');
+        $event->setRequest($request);
         $this->getEventManager()->triggerEvent($event);
         return $this;
     }
