@@ -2,7 +2,6 @@
   "name": "lm-commons/lmc-user-mezzio-authentication",
   "description": "lmc-user adapter for mezzio-authentication",
   "license": "BSD-3-Clause",
-  "version": "1.0.0",
   "authors": [
     {
       "name": "Eric Richer",
@@ -14,7 +13,7 @@
     "laminas/laminas-authentication": "^2.0",
     "laminas/laminas-eventmanager": "^3.14",
     "laminas/laminas-session": "^2.12",
-    "lm-commons/lmc-user-repository": "1.0.x-authenticate-dev",
+    "lm-commons/lmc-user-repository": "1.0.x-dev",
     "mezzio/mezzio-authentication": "^1.10",
     "mezzio/mezzio-session": "^1.16"
   },
@@ -58,11 +57,5 @@
     "cs-fix": "phpcbf",
     "test-coverage-html": "phpunit --coverage-html ./build/html",
     "static-analysis": "psalm --shepherd --stats"
-  },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "c:/lm-commons/lmc-user-repository"
-    }
-  ]
+  }
 }
