@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lmc\User\Authentication\Adapter;
 
 use Lmc\User\Authentication\Options\Options;
-use Lmc\User\Repository\UserInterface;
+use Lmc\User\Repository\AdapterInterface;
 use Psr\Container\ContainerInterface;
 
 class DbFactory
@@ -13,7 +13,7 @@ class DbFactory
     public function __invoke(ContainerInterface $container): Db
     {
         return new Db(
-            $container->get(UserInterface::class),
+            $container->get(AdapterInterface::class),
             $container->get(Options::class)
         );
     }
