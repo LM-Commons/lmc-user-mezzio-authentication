@@ -30,7 +30,7 @@ class AdapterChain implements AdapterInterface, AdapterChainInterface
      */
     public function authenticate(): Result
     {
-        $event  = $this->getEvent();
+        $event = $this->getEvent();
         return new Result(
             $event->getCode() ?? Result::FAILURE_UNCATEGORIZED,
             $event->getIdentity(),
