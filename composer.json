@@ -9,11 +9,11 @@
     }
   ],
   "require": {
-    "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+    "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
     "laminas/laminas-authentication": "^2.0",
     "laminas/laminas-eventmanager": "^3.14",
     "laminas/laminas-session": "^2.12",
-    "lm-commons/lmc-user-repository": "1.0.x-dev",
+    "lm-commons/lmc-user-repository": "^1.0",
     "mezzio/mezzio-authentication": "^1.10",
     "mezzio/mezzio-session": "^1.16"
   },
