@@ -40,11 +40,9 @@ class AuthenticationFactory
             ));
         }
 */
-        /** @var RedirectUriProviderInterface $redirectUriProvider */
         return new Authentication(
             $auth,
             $responseFactory,
-//            $redirectUriProvider->getRedirectUri()
             '/auth/login'
         );
     }
