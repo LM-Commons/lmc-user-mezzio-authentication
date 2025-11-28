@@ -75,9 +75,9 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
             return true;
         }
 
-        $params     = $request->getParsedBody();
+        $params = $request->getParsedBody();
         /** @var ?string $identity */
-        $identity   = $params['identity'] ?? null;
+        $identity = $params['identity'] ?? null;
         /** @var ?string $credential */
         $credential = $params['credential'] ?? null;
 
@@ -147,7 +147,7 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
         $this->updateUserPasswordHash($userObject, $credential);
         $this->setSatisfied(true);
         /** @var array $storage */
-        $storage = $this->session->get(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
+        $storage             = $this->session->get(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
         $storage['identity'] = $event->getIdentity();
         $this->session->set(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE, $storage);
         $event->setCode(AuthenticationResult::SUCCESS)
@@ -171,7 +171,7 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
         $this->adapter->update($userObject);
     }
 
-    public function preProcessCredential($credential): mixed
+    public function preProcessCredential(string $credential): mixed
     {
         if (null !== $this->credentialPreprocessor) {
             return ($this->credentialPreprocessor)($credential);
@@ -185,6 +185,9 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
         return $this;
     }
 
+    /**
+     * @param int $priority
+     */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
         $listeners[] = $events->attach('authenticate', [$this, 'authenticate'], $priority);

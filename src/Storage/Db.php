@@ -8,8 +8,8 @@ use Laminas\Authentication\Storage\Session;
 use Laminas\Authentication\Storage\StorageInterface;
 use Lmc\User\Repository\AdapterInterface;
 use Lmc\User\Repository\UserInterface;
-
 use Mezzio\Session\SessionInterface;
+
 use function is_int;
 use function is_scalar;
 
@@ -21,7 +21,7 @@ class Db implements StorageInterface
 
     public function __construct(
         private readonly AdapterInterface $adapter,
-        SessionInterface $session = null
+        ?SessionInterface $session = null
     ) {
         $this->session = $session;
     }
@@ -36,7 +36,7 @@ class Db implements StorageInterface
      */
     public function isEmpty(): bool
     {
-        if (!$this->session->has(Session::NAMESPACE_DEFAULT)) {
+        if (! $this->session->has(Session::NAMESPACE_DEFAULT)) {
             return true;
         }
         $identity = $this->session->get(Session::NAMESPACE_DEFAULT, null);
@@ -57,7 +57,7 @@ class Db implements StorageInterface
         }
         $identity = $this->session->get(Session::NAMESPACE_DEFAULT, null);
         if (is_int($identity) || is_scalar($identity)) {
-            $identity = $this->adapter->findById($identity);
+            $identity               = $this->adapter->findById($identity);
             $this->resolvedIdentity = $identity;
         }
         return $this->resolvedIdentity;
