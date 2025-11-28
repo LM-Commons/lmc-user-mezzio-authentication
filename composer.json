@@ -14,7 +14,6 @@
     "laminas/laminas-eventmanager": "^3.14",
     "laminas/laminas-session": "^2.12",
     "lm-commons/lmc-user-repository": "^1.0",
-    "mezzio/mezzio-authentication": "^1.10",
     "mezzio/mezzio-session": "^1.16"
   },
   "require-dev": {
