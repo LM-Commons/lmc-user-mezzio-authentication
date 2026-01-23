@@ -9,11 +9,12 @@ use Laminas\Authentication\Storage\StorageInterface;
 use Lmc\User\Repository\AdapterInterface;
 use Lmc\User\Repository\UserInterface;
 use Mezzio\Session\SessionInterface;
+use Override;
 
 use function is_int;
-use function is_scalar;
+use function is_string;
 
-class Db implements StorageInterface
+final class Db implements StorageInterface
 {
     protected ?UserInterface $resolvedIdentity = null;
 
@@ -34,12 +35,14 @@ class Db implements StorageInterface
     /**
      * @inheritDoc
      */
+    #[Override]
     public function isEmpty(): bool
     {
         if (! $this->session->has(Session::NAMESPACE_DEFAULT)) {
             return true;
         }
-        $identity = $this->session->get(Session::NAMESPACE_DEFAULT, null);
+        /** @var int|string|null $identity */
+        $identity = $this->session->get(Session::NAMESPACE_DEFAULT);
         if ($identity === null) {
             $this->clear();
             return true;
@@ -50,13 +53,15 @@ class Db implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function read(): UserInterface
+    #[Override]
+    public function read(): ?UserInterface
     {
         if (null !== $this->resolvedIdentity) {
             return $this->resolvedIdentity;
         }
-        $identity = $this->session->get(Session::NAMESPACE_DEFAULT, null);
-        if (is_int($identity) || is_scalar($identity)) {
+        /** @var int|string|null $identity */
+        $identity = $this->session->get(Session::NAMESPACE_DEFAULT);
+        if (is_int($identity) || is_string($identity)) {
             $identity               = $this->adapter->findById($identity);
             $this->resolvedIdentity = $identity;
         }
@@ -66,7 +71,8 @@ class Db implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function write($contents)
+    #[Override]
+    public function write($contents): void
     {
         $this->resolvedIdentity = null;
         $this->session->set(Session::NAMESPACE_DEFAULT, $contents);
@@ -75,7 +81,8 @@ class Db implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function clear()
+    #[Override]
+    public function clear(): void
     {
         $this->resolvedIdentity = null;
         $this->session->unset(Session::NAMESPACE_DEFAULT);

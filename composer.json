@@ -55,6 +55,7 @@
     "cs-check": "phpcs",
     "cs-fix": "phpcbf",
     "test-coverage-html": "phpunit --coverage-html ./build/html",
-    "static-analysis": "psalm --shepherd --stats"
+    "static-analysis": "psalm --shepherd --stats",
+    "static-analysis-update-baseline": "psalm --shepherd --stats --update-baseline"
   }
 }

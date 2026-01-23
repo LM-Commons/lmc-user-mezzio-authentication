@@ -14,7 +14,7 @@ use function is_array;
 /**
  * @extends Event<object|string|null, array|ArrayAccess|object|array<array-key, int|null>>
  */
-class AdapterChainEvent extends Event
+final class AdapterChainEvent extends Event
 {
     public const AUTHENTICATE_PRE     = 'authenticate.pre';
     public const AUTHENTICATE         = 'authenticate';

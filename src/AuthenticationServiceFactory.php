@@ -9,7 +9,7 @@ use Laminas\Authentication\AuthenticationService;
 use Laminas\Authentication\Storage\StorageInterface;
 use Psr\Container\ContainerInterface;
 
-class AuthenticationServiceFactory
+final class AuthenticationServiceFactory
 {
     public function __invoke(ContainerInterface $container): AuthenticationService
     {

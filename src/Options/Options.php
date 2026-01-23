@@ -15,7 +15,7 @@ use function is_int;
  * @template TValue
  * @extends AbstractOptions<TValue>
  */
-class Options extends AbstractOptions
+final class Options extends AbstractOptions
 {
     // phpcs:disable PSR2.Classes.PropertyDeclaration.Underscore,WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCapsProperty
     /**
@@ -75,6 +75,9 @@ class Options extends AbstractOptions
         return $this->authIdentityFields;
     }
 
+    /**
+     * @param string[] $authIdentityFields
+     */
     public function setAuthIdentityFields(array $authIdentityFields): self
     {
         $this->authIdentityFields = $authIdentityFields;
@@ -118,7 +121,7 @@ class Options extends AbstractOptions
                 throw new InvalidArgumentException('Authentication adapter configuration key "name" is missing');
             }
             $authAdapterConfig['name']     = $authAdapterConfigOrName['name'];
-            $authAdapterConfig['priority'] = $priority ?? ChainableAdapterConfig::DEFAULT_PRIORITY;
+            $authAdapterConfig['priority'] = $priority;
             $authAdapterConfig['options']  = $authAdapterConfigOrName['options'] ?? [];
             $this->authAdapters[]          = new ChainableAdapterConfig($authAdapterConfig);
         }

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.14.3@d0b040a91f280f071c1abcb1b77ce3822058725a">
+  <file src="src/Adapter/AdapterChain.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function prepareForAuthentication(RequestInterface $request): ResponseInterface|bool]]></code>
+    </MissingOverrideAttribute>
+    <MixedMethodCall>
+      <code><![CDATA[clear]]></code>
+    </MixedMethodCall>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[getStorage]]></code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/Adapter/AdapterChainEvent.php">
+    <MixedReturnStatement>
+      <code><![CDATA[$this->getParam('code')]]></code>
+      <code><![CDATA[$this->getParam('request')]]></code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/Adapter/AdapterChainFactory.php">
+    <MixedArgument>
+      <code><![CDATA[$container->get('EventManager')]]></code>
+    </MixedArgument>
+  </file>
+  <file src="src/Adapter/AdapterChainInterface.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[authenticate]]></code>
+      <code><![CDATA[logoutAdapters]]></code>
+      <code><![CDATA[prepareForAuthentication]]></code>
+      <code><![CDATA[resetAdapters]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Adapter/Db.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function detach(EventManagerInterface $events)]]></code>
+    </MissingOverrideAttribute>
+    <MixedArgument>
+      <code><![CDATA[$credential]]></code>
+      <code><![CDATA[$credential]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$credential]]></code>
+      <code><![CDATA[$mode]]></code>
+      <code><![CDATA[$session]]></code>
+      <code><![CDATA[$storage['identity']]]></code>
+    </MixedAssignment>
+    <PossiblyNullArgument>
+      <code><![CDATA[$userObject->getPassword()]]></code>
+      <code><![CDATA[$userObject->getPassword()]]></code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference>
+      <code><![CDATA[getAttribute]]></code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedVariable>
+      <code><![CDATA[$listeners]]></code>
+    </PossiblyUndefinedVariable>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[setCredentialPreprocessor]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[Db]]></code>
+    </PropertyNotSetInConstructor>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[getAttribute]]></code>
+    </UndefinedInterfaceMethod>
+    <UnusedVariable>
+      <code><![CDATA[$listeners]]></code>
+    </UnusedVariable>
+  </file>
+  <file src="src/Authentication.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function authenticate(ServerRequestInterface $request): ?UserInterface]]></code>
+      <code><![CDATA[public function unauthorizedResponse(ServerRequestInterface $request): ResponseInterface]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/AuthenticationFactory.php">
+    <MixedArgument>
+      <code><![CDATA[$auth]]></code>
+      <code><![CDATA[$responseFactory]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$auth]]></code>
+      <code><![CDATA[$redirectUriProvider]]></code>
+      <code><![CDATA[$responseFactory]]></code>
+    </MixedAssignment>
+    <UnusedVariable>
+      <code><![CDATA[$redirectUriProvider]]></code>
+    </UnusedVariable>
+  </file>
+  <file src="src/AuthenticationServiceFactory.php">
+    <MixedArgument>
+      <code><![CDATA[$container->get(AdapterInterface::class)]]></code>
+      <code><![CDATA[$container->get(StorageInterface::class)]]></code>
+    </MixedArgument>
+    <UnusedClass>
+      <code><![CDATA[AuthenticationServiceFactory]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Exception/AuthenticationEventException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AuthenticationEventException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Exception/InvalidConfigException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[InvalidConfigException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Options/ChainableAdapterConfig.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ChainableAdapterConfig]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getOptions]]></code>
+      <code><![CDATA[setName]]></code>
+      <code><![CDATA[setOptions]]></code>
+      <code><![CDATA[setPriority]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Options/Options.php">
+    <MixedAssignment>
+      <code><![CDATA[$authAdapterConfig['name']]]></code>
+      <code><![CDATA[$authAdapterConfig['options']]]></code>
+    </MixedAssignment>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[findAuthAdapterByName]]></code>
+      <code><![CDATA[getDefaultUserState]]></code>
+      <code><![CDATA[setAllowedLoginStates]]></code>
+      <code><![CDATA[setAuthAdapters]]></code>
+      <code><![CDATA[setAuthIdentityFields]]></code>
+      <code><![CDATA[setDefaultUserState]]></code>
+      <code><![CDATA[setEnableUserState]]></code>
+      <code><![CDATA[setPasswordCost]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Options/OptionsFactory.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$config['lmc_user']]]></code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="src/RedirectUriProviderInterface.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getRedirectUri]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Storage/Db.php">
+    <PossiblyNullReference>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[has]]></code>
+      <code><![CDATA[set]]></code>
+      <code><![CDATA[unset]]></code>
+    </PossiblyNullReference>
+  </file>
+</files>

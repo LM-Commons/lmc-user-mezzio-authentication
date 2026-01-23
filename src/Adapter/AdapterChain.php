@@ -11,6 +11,7 @@ use Laminas\EventManager\Event;
 use Laminas\EventManager\EventManagerAwareTrait;
 use Laminas\EventManager\SharedEventManagerInterface;
 use Lmc\User\Authentication\Exception\AuthenticationEventException;
+use Override;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -19,7 +20,7 @@ use function is_array;
 use function is_object;
 use function sprintf;
 
-class AdapterChain implements AdapterInterface, AdapterChainInterface
+final class AdapterChain implements AdapterInterface, AdapterChainInterface
 {
     use EventManagerAwareTrait;
 
@@ -28,6 +29,7 @@ class AdapterChain implements AdapterInterface, AdapterChainInterface
     /**
      * @inheritDoc
      */
+    #[Override]
     public function authenticate(): Result
     {
         $event = $this->getEvent();
@@ -82,6 +84,7 @@ class AdapterChain implements AdapterInterface, AdapterChainInterface
     /**
      * @throws ExceptionInterface
      */
+    #[Override]
     public function resetAdapters(RequestInterface $request): AdapterChain
     {
         $sharedManager = $this->getEventManager()->getSharedManager();
@@ -103,6 +106,7 @@ class AdapterChain implements AdapterInterface, AdapterChainInterface
         return $this;
     }
 
+    #[Override]
     public function logoutAdapters(RequestInterface $request): AdapterChain
     {
         //Adapters might need to perform additional cleanup after logout

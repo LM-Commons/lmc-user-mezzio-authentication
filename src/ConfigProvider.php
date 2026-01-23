@@ -7,7 +7,7 @@ namespace Lmc\User\Authentication;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\Storage\StorageInterface;
 
-class ConfigProvider
+final class ConfigProvider
 {
     public const LMC_USER_SESSION_STORAGE_NAMESPACE = 'LmcUserNamespace';
 

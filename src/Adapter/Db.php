@@ -14,6 +14,7 @@ use Lmc\User\Repository\UserInterface;
 use Mezzio\Session\RetrieveSession;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
+use Override;
 use Psr\Http\Message\ServerRequestInterface;
 
 use function array_shift;
@@ -27,7 +28,7 @@ use function password_verify;
 
 use const PASSWORD_BCRYPT;
 
-class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
+final class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
 {
     /** @var callable|null  */
     protected $credentialPreprocessor;
@@ -41,6 +42,7 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
     /**
      * Called when user id logged out
      */
+    #[Override]
     public function logout(AdapterChainEvent $event): void
     {
         $request = $event->getRequest();
@@ -53,11 +55,13 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
     /**
      * Called when authentication adapter is reset
      */
+    #[Override]
     public function reset(AdapterChainEvent $event): void
     {
 //        $this->getStorage()->clear();
     }
 
+    #[Override]
     public function authenticate(AdapterChainEvent $event): bool
     {
         $request = $event->getRequest();
@@ -188,7 +192,8 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
     /**
      * @param int $priority
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    #[Override]
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
         $listeners[] = $events->attach('authenticate', [$this, 'authenticate'], $priority);
         $listeners[] = $events->attach('logout', [$this, 'logout'], $priority);
