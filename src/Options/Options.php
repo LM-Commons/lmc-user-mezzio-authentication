@@ -15,7 +15,7 @@ use function is_int;
  * @template TValue
  * @extends AbstractOptions<TValue>
  */
-class Options extends AbstractOptions
+final class Options extends AbstractOptions
 {
     // phpcs:disable PSR2.Classes.PropertyDeclaration.Underscore,WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCapsProperty
     /**
@@ -34,43 +34,9 @@ class Options extends AbstractOptions
     /** @var string[]  */
     protected array $authIdentityFields = ['email'];
 
-    /*
-        protected string $userEntityClass = User::class;
-
-        protected string $tableName = 'user';
-
-        protected string $idFieldName = 'id';
-
-        protected string $rolesDelimiter = ',';
-    */
     /** @var array<ChainableAdapterConfig> */
     protected array $authAdapters = [];
 
-/*
-    public function setUserEntityClass(string $userEntityClass): Options
-    {
-        Assert::classExists($userEntityClass);
-        Assert::implementsInterface($userEntityClass, UserInterface::class);
-        $this->userEntityClass = $userEntityClass;
-        return $this;
-    }
-
-    public function getUserEntityClass(): string
-    {
-        return $this->userEntityClass;
-    }
-
-    public function setTableName(string $tableName): Options
-    {
-        $this->tableName = $tableName;
-        return $this;
-    }
-
-    public function getTableName(): string
-    {
-        return $this->tableName;
-    }
-*/
     public function getEnableUserState(): bool
     {
         return $this->enableUserState;
@@ -109,6 +75,9 @@ class Options extends AbstractOptions
         return $this->authIdentityFields;
     }
 
+    /**
+     * @param string[] $authIdentityFields
+     */
     public function setAuthIdentityFields(array $authIdentityFields): self
     {
         $this->authIdentityFields = $authIdentityFields;
@@ -125,6 +94,7 @@ class Options extends AbstractOptions
         $this->passwordCost = $passwordCost;
         return $this;
     }
+
     /**
      * @param array<array-key, mixed> $authAdaptersConfig
      * @return $this
@@ -151,7 +121,7 @@ class Options extends AbstractOptions
                 throw new InvalidArgumentException('Authentication adapter configuration key "name" is missing');
             }
             $authAdapterConfig['name']     = $authAdapterConfigOrName['name'];
-            $authAdapterConfig['priority'] = $priority ?? ChainableAdapterConfig::DEFAULT_PRIORITY;
+            $authAdapterConfig['priority'] = $priority;
             $authAdapterConfig['options']  = $authAdapterConfigOrName['options'] ?? [];
             $this->authAdapters[]          = new ChainableAdapterConfig($authAdapterConfig);
         }
@@ -175,30 +145,4 @@ class Options extends AbstractOptions
         }
         return null;
     }
-
-    /*
-    public function getIdFieldName(): string
-    {
-        return $this->idFieldName;
-    }
-
-    public function setIdFieldName(string $idFieldName): self
-    {
-        $this->idFieldName = $idFieldName;
-        return $this;
-    }
-
-    public function getRolesDelimiter(): string
-    {
-        return $this->rolesDelimiter;
-    }
-
-    public function setRolesDelimiter(string $rolesDelimiter): self
-    {
-        if (strlen($rolesDelimiter) > 0) {
-            $this->rolesDelimiter = $rolesDelimiter;
-        }
-        return $this;
-    }
-*/
 }

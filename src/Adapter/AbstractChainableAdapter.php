@@ -31,7 +31,7 @@ abstract class AbstractChainableAdapter implements ChainableAdapterInterface
      */
     public function setSatisfied(bool $bool = true): AbstractChainableAdapter
     {
-        $storage['is_satisfied'] = $bool;
+        $storage = ['is_satisfied' => $bool];
         $this->session->set(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE, $storage);
         return $this;
     }

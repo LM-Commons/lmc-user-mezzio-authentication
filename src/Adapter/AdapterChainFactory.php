@@ -7,18 +7,25 @@ namespace Lmc\User\Authentication\Adapter;
 use Laminas\EventManager\ListenerAggregateInterface;
 use Lmc\User\Authentication\Exception\InvalidConfigException;
 use Lmc\User\Authentication\Options\Options;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 use function sprintf;
 
-class AdapterChainFactory
+final class AdapterChainFactory
 {
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function __invoke(ContainerInterface $container): AdapterChain
     {
         $adapterChain = new AdapterChain();
         if ($container->has('EventManager')) {
             $adapterChain->setEventManager($container->get('EventManager'));
         }
+        /** @var Options $coreOptions */
         $coreOptions = $container->get(Options::class);
 
         foreach ($coreOptions->getAuthAdapters() as $adapterConfig) {

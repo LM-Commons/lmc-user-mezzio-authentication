@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use function assert;
 
-readonly class Authentication implements AuthenticationInterface
+final readonly class Authentication implements AuthenticationInterface
 {
     public function __construct(
         private AuthenticationService $authenticationService,

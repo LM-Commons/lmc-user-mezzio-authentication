@@ -10,18 +10,17 @@
   ],
   "require": {
     "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
-    "laminas/laminas-authentication": "^2.0",
+    "laminas/laminas-authentication": "^2.13",
     "laminas/laminas-eventmanager": "^3.14",
     "laminas/laminas-session": "^2.12",
     "lm-commons/lmc-user-repository": "^1.0",
-    "mezzio/mezzio-authentication": "^1.10",
     "mezzio/mezzio-session": "^1.16"
   },
   "require-dev": {
     "laminas/laminas-coding-standard": "^3.1",
     "phpunit/phpunit": "^11.5 || ^12.1",
     "psalm/plugin-phpunit": "^0.19",
-    "vimeo/psalm": "^6.0"
+    "vimeo/psalm": "^6.14"
   },
   "autoload": {
     "psr-4": {
@@ -56,6 +55,7 @@
     "cs-check": "phpcs",
     "cs-fix": "phpcbf",
     "test-coverage-html": "phpunit --coverage-html ./build/html",
-    "static-analysis": "psalm --shepherd --stats"
+    "static-analysis": "psalm --shepherd --stats",
+    "static-analysis-update-baseline": "psalm --shepherd --stats --update-baseline"
   }
 }

@@ -14,6 +14,7 @@ use Lmc\User\Repository\UserInterface;
 use Mezzio\Session\RetrieveSession;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
+use Override;
 use Psr\Http\Message\ServerRequestInterface;
 
 use function array_shift;
@@ -27,7 +28,7 @@ use function password_verify;
 
 use const PASSWORD_BCRYPT;
 
-class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
+final class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
 {
     /** @var callable|null  */
     protected $credentialPreprocessor;
@@ -41,6 +42,7 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
     /**
      * Called when user id logged out
      */
+    #[Override]
     public function logout(AdapterChainEvent $event): void
     {
         $request = $event->getRequest();
@@ -53,11 +55,13 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
     /**
      * Called when authentication adapter is reset
      */
+    #[Override]
     public function reset(AdapterChainEvent $event): void
     {
 //        $this->getStorage()->clear();
     }
 
+    #[Override]
     public function authenticate(AdapterChainEvent $event): bool
     {
         $request = $event->getRequest();
@@ -75,9 +79,9 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
             return true;
         }
 
-        $params     = $request->getParsedBody();
+        $params = $request->getParsedBody();
         /** @var ?string $identity */
-        $identity   = $params['identity'] ?? null;
+        $identity = $params['identity'] ?? null;
         /** @var ?string $credential */
         $credential = $params['credential'] ?? null;
 
@@ -147,7 +151,7 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
         $this->updateUserPasswordHash($userObject, $credential);
         $this->setSatisfied(true);
         /** @var array $storage */
-        $storage = $this->session->get(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
+        $storage             = $this->session->get(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE);
         $storage['identity'] = $event->getIdentity();
         $this->session->set(ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE, $storage);
         $event->setCode(AuthenticationResult::SUCCESS)
@@ -171,7 +175,7 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
         $this->adapter->update($userObject);
     }
 
-    public function preProcessCredential($credential): mixed
+    public function preProcessCredential(string $credential): mixed
     {
         if (null !== $this->credentialPreprocessor) {
             return ($this->credentialPreprocessor)($credential);
@@ -185,7 +189,11 @@ class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
         return $this;
     }
 
-    public function attach(EventManagerInterface $events, $priority = 1)
+    /**
+     * @param int $priority
+     */
+    #[Override]
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
         $listeners[] = $events->attach('authenticate', [$this, 'authenticate'], $priority);
         $listeners[] = $events->attach('logout', [$this, 'logout'], $priority);

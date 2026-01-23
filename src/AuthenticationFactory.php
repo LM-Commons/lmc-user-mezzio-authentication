@@ -12,7 +12,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 
 use function sprintf;
 
-class AuthenticationFactory
+final class AuthenticationFactory
 {
     public function __invoke(ContainerInterface $container): AuthenticationInterface
     {
@@ -40,11 +40,9 @@ class AuthenticationFactory
             ));
         }
 */
-        /** @var RedirectUriProviderInterface $redirectUriProvider */
         return new Authentication(
             $auth,
             $responseFactory,
-//            $redirectUriProvider->getRedirectUri()
             '/auth/login'
         );
     }
