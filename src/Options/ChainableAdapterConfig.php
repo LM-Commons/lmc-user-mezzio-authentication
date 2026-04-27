@@ -12,7 +12,7 @@ use Laminas\Stdlib\AbstractOptions;
  */
 class ChainableAdapterConfig extends AbstractOptions
 {
-    public const DEFAULT_PRIORITY = 100;
+    public const int DEFAULT_PRIORITY = 100;
 
     // phpcs:disable PSR2.Classes.PropertyDeclaration.Underscore,WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCapsProperty
     /**
