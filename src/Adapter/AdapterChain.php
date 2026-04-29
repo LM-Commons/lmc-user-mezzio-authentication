@@ -9,14 +9,12 @@ use Laminas\Authentication\Exception\ExceptionInterface;
 use Laminas\Authentication\Result;
 use Laminas\EventManager\Event;
 use Laminas\EventManager\EventManagerAwareTrait;
-use Laminas\EventManager\SharedEventManagerInterface;
 use Lmc\User\Authentication\Exception\AuthenticationEventException;
 use Override;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function gettype;
-use function is_array;
 use function is_object;
 use function sprintf;
 
@@ -87,18 +85,21 @@ final class AdapterChain implements AdapterInterface, AdapterChainInterface
     #[Override]
     public function resetAdapters(RequestInterface $request): AdapterChain
     {
+        /* todo revisit sharedManager implementation
+        // This needs the Chainable adapter to implement a getStorage method
         $sharedManager = $this->getEventManager()->getSharedManager();
 
         if ($sharedManager instanceof SharedEventManagerInterface) {
             $listeners = $sharedManager->getListeners(['authenticate'], AdapterChainEvent::AUTHENTICATE);
 
-            /** @var mixed|array $listener */
             foreach ($listeners as $listener) {
                 if (is_array($listener) && $listener[0] instanceof ChainableAdapterInterface) {
                     $listener[0]->getStorage()->clear();
                 }
             }
         }
+        */
+
         $event = $this->getEvent();
         $event->setName('reset');
         $event->setRequest($request);

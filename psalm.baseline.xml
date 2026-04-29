@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.14.3@d0b040a91f280f071c1abcb1b77ce3822058725a">
+<files psalm-version="6.16.1@f1f5de594dc76faf8784e02d3dc4716c91c6f6ac">
   <file src="src/Adapter/AdapterChain.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function prepareForAuthentication(RequestInterface $request): ResponseInterface|bool]]></code>
     </MissingOverrideAttribute>
-    <MixedMethodCall>
-      <code><![CDATA[clear]]></code>
-    </MixedMethodCall>
-    <UndefinedInterfaceMethod>
-      <code><![CDATA[getStorage]]></code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="src/Adapter/AdapterChainEvent.php">
     <MixedReturnStatement>
@@ -21,14 +15,6 @@
     <MixedArgument>
       <code><![CDATA[$container->get('EventManager')]]></code>
     </MixedArgument>
-  </file>
-  <file src="src/Adapter/AdapterChainInterface.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[authenticate]]></code>
-      <code><![CDATA[logoutAdapters]]></code>
-      <code><![CDATA[prepareForAuthentication]]></code>
-      <code><![CDATA[resetAdapters]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Adapter/Db.php">
     <MissingOverrideAttribute>
@@ -54,9 +40,6 @@
     <PossiblyUndefinedVariable>
       <code><![CDATA[$listeners]]></code>
     </PossiblyUndefinedVariable>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[setCredentialPreprocessor]]></code>
-    </PossiblyUnusedMethod>
     <PropertyNotSetInConstructor>
       <code><![CDATA[Db]]></code>
     </PropertyNotSetInConstructor>
@@ -67,34 +50,11 @@
       <code><![CDATA[$listeners]]></code>
     </UnusedVariable>
   </file>
-  <file src="src/Authentication.php">
-    <MissingOverrideAttribute>
-      <code><![CDATA[public function authenticate(ServerRequestInterface $request): ?UserInterface]]></code>
-      <code><![CDATA[public function unauthorizedResponse(ServerRequestInterface $request): ResponseInterface]]></code>
-    </MissingOverrideAttribute>
-  </file>
-  <file src="src/AuthenticationFactory.php">
-    <MixedArgument>
-      <code><![CDATA[$auth]]></code>
-      <code><![CDATA[$responseFactory]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$auth]]></code>
-      <code><![CDATA[$redirectUriProvider]]></code>
-      <code><![CDATA[$responseFactory]]></code>
-    </MixedAssignment>
-    <UnusedVariable>
-      <code><![CDATA[$redirectUriProvider]]></code>
-    </UnusedVariable>
-  </file>
   <file src="src/AuthenticationServiceFactory.php">
     <MixedArgument>
       <code><![CDATA[$container->get(AdapterInterface::class)]]></code>
       <code><![CDATA[$container->get(StorageInterface::class)]]></code>
     </MixedArgument>
-    <UnusedClass>
-      <code><![CDATA[AuthenticationServiceFactory]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Exception/AuthenticationEventException.php">
     <ClassMustBeFinal>
@@ -110,28 +70,12 @@
     <ClassMustBeFinal>
       <code><![CDATA[ChainableAdapterConfig]]></code>
     </ClassMustBeFinal>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[getOptions]]></code>
-      <code><![CDATA[setName]]></code>
-      <code><![CDATA[setOptions]]></code>
-      <code><![CDATA[setPriority]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Options/Options.php">
     <MixedAssignment>
       <code><![CDATA[$authAdapterConfig['name']]]></code>
       <code><![CDATA[$authAdapterConfig['options']]]></code>
     </MixedAssignment>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[findAuthAdapterByName]]></code>
-      <code><![CDATA[getDefaultUserState]]></code>
-      <code><![CDATA[setAllowedLoginStates]]></code>
-      <code><![CDATA[setAuthAdapters]]></code>
-      <code><![CDATA[setAuthIdentityFields]]></code>
-      <code><![CDATA[setDefaultUserState]]></code>
-      <code><![CDATA[setEnableUserState]]></code>
-      <code><![CDATA[setPasswordCost]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Options/OptionsFactory.php">
     <PossiblyInvalidArgument>
@@ -139,9 +83,9 @@
     </PossiblyInvalidArgument>
   </file>
   <file src="src/RedirectUriProviderInterface.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[getRedirectUri]]></code>
-    </PossiblyUnusedMethod>
+    <UnusedClass>
+      <code><![CDATA[RedirectUriProviderInterface]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Storage/Db.php">
     <PossiblyNullReference>
@@ -150,5 +94,11 @@
       <code><![CDATA[set]]></code>
       <code><![CDATA[unset]]></code>
     </PossiblyNullReference>
+  </file>
+  <file src="test/Adapter/AdapterChainTest.php">
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[ResponseInterface]]></code>
+      <code><![CDATA[string]]></code>
+    </PossiblyUnusedReturnValue>
   </file>
 </files>

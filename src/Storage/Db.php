@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Lmc\User\Authentication\Storage;
 
 use Laminas\Authentication\Storage\Session;
-use Laminas\Authentication\Storage\StorageInterface;
 use Lmc\User\Repository\AdapterInterface;
 use Lmc\User\Repository\UserInterface;
 use Mezzio\Session\SessionInterface;
@@ -27,6 +26,7 @@ final class Db implements StorageInterface
         $this->session = $session;
     }
 
+    #[Override]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
