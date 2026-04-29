@@ -5,7 +5,7 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
-import packageConfig from "./config";
+import packageConfig from "./config/index.js";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -54,6 +54,13 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: '1.x (latest)',
+              badge: true,
+            },
+          },
           sidebarPath: './sidebars.js',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -77,6 +84,9 @@ const config = {
         },
         theme: {
           customCss: './src/css/custom.css',
+        },
+        googleTagManager: {
+          containerId: 'GTM-5PVZSCQ6',
         },
       }),
     ],
@@ -102,6 +112,10 @@ const config = {
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: 'Docs',
+          },
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
           },
 //          {to: '/blog', label: 'Blog', position: 'left'},
             {
@@ -137,6 +151,23 @@ const config = {
               },
             ],
           },
+          {
+            title: 'Other',
+            items: [
+              {
+                label: 'Disclaimer',
+                to: 'disclaimer',
+              },
+              {
+                label: 'Privacy',
+                to: 'privacy',
+              },
+              {
+                label: 'Cookies Policy',
+                to: 'cookies-policy',
+              },
+            ],
+          }
         ],
         copyright: `Copyright © ${new Date().getFullYear()} LM-Commons Organization. Built with Docusaurus.`,
       },
