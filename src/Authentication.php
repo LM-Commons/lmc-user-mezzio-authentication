@@ -10,6 +10,7 @@ use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
+use Override;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,6 +29,7 @@ final readonly class Authentication implements AuthenticationInterface
     /**
      * @inheritDoc
      */
+    #[Override]
     public function authenticate(ServerRequestInterface $request): ?UserInterface
     {
         /** @var SessionInterface $session */
@@ -48,6 +50,7 @@ final readonly class Authentication implements AuthenticationInterface
     /**
      * @inheritDoc
      */
+    #[Override]
     public function unauthorizedResponse(ServerRequestInterface $request): ResponseInterface
     {
         return $this->responseFactory

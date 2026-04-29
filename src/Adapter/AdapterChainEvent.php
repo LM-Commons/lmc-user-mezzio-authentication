@@ -16,12 +16,12 @@ use function is_array;
  */
 final class AdapterChainEvent extends Event
 {
-    public const AUTHENTICATE_PRE     = 'authenticate.pre';
-    public const AUTHENTICATE         = 'authenticate';
-    public const AUTHENTICATE_SUCCESS = 'authenticate.success';
-    public const AUTHENTICATE_FAIL    = 'authenticate.fail';
-    public const RESET                = 'reset';
-    public const LOGOUT               = 'logout';
+    public const string AUTHENTICATE_PRE     = 'authenticate.pre';
+    public const string AUTHENTICATE         = 'authenticate';
+    public const string AUTHENTICATE_SUCCESS = 'authenticate.success';
+    public const string AUTHENTICATE_FAIL    = 'authenticate.fail';
+    public const string RESET                = 'reset';
+    public const string LOGOUT               = 'logout';
 
     public function getIdentity(): mixed
     {
