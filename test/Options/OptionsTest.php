@@ -19,7 +19,6 @@ final class OptionsTest extends TestCase
         $this->assertFalse($options->getEnableUserState());
         $this->assertEquals(UserInterface::STATE_ACTIVE, $options->getDefaultUserState());
         $this->assertEquals([UserInterface::STATE_ACTIVE], $options->getAllowedLoginStates());
-        $this->assertEquals(14, $options->getPasswordCost());
         $this->assertEquals(['email'], $options->getAuthIdentityFields());
         $this->assertEquals([], $options->getAuthAdapters());
     }
@@ -30,7 +29,6 @@ final class OptionsTest extends TestCase
         $options->setEnableUserState(true);
         $options->setDefaultUserState(2);
         $options->setAllowedLoginStates(['foo', 'bar']);
-        $options->setPasswordCost(10);
         $options->setAuthIdentityFields(['foo', 'bar']);
         $options->setAuthAdapters([
             20 => [
@@ -40,7 +38,6 @@ final class OptionsTest extends TestCase
         $this->assertTrue($options->getEnableUserState());
         $this->assertEquals(2, $options->getDefaultUserState());
         $this->assertEquals(['foo', 'bar'], $options->getAllowedLoginStates());
-        $this->assertEquals(10, $options->getPasswordCost());
         $this->assertEquals(['foo', 'bar'], $options->getAuthIdentityFields());
         $adapters = $options->getAuthAdapters();
         $adapter  = $adapters[0];
