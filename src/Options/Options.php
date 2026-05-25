@@ -6,6 +6,7 @@ namespace Lmc\User\Authentication\Options;
 
 use InvalidArgumentException;
 use Laminas\Stdlib\AbstractOptions;
+use Lmc\User\Repository\UserInterface;
 
 use function array_is_list;
 use function is_array;
@@ -26,9 +27,11 @@ final class Options extends AbstractOptions
     protected $__strictMode__ = false;
     // phpcs:enable
 
-    protected bool $enableUserState     = false;
-    protected int $defaultUserState     = 1;
-    protected array $allowedLoginStates = [null, 1];
+    protected bool $enableUserState        = false;
+    protected int|string $defaultUserState = UserInterface::STATE_ACTIVE;
+
+    /** @var list<string|null|int> */
+    protected array $allowedLoginStates = [UserInterface::STATE_ACTIVE];
     protected int $passwordCost         = 14;
 
     /** @var string[]  */
@@ -48,22 +51,28 @@ final class Options extends AbstractOptions
         return $this;
     }
 
-    public function getDefaultUserState(): int
+    public function getDefaultUserState(): int|string
     {
         return $this->defaultUserState;
     }
 
-    public function setDefaultUserState(int $defaultUserState): self
+    public function setDefaultUserState(int|string $defaultUserState): self
     {
         $this->defaultUserState = $defaultUserState;
         return $this;
     }
 
+    /**
+     * @return list<int|null|string>
+     */
     public function getAllowedLoginStates(): array
     {
         return $this->allowedLoginStates;
     }
 
+    /**
+     * @param list<string|int|null> $allowedLoginStates
+     */
     public function setAllowedLoginStates(array $allowedLoginStates): self
     {
         $this->allowedLoginStates = $allowedLoginStates;
