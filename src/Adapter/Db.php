@@ -20,13 +20,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use function array_shift;
 use function assert;
 use function count;
-use function explode;
 use function in_array;
 use function is_object;
-use function password_hash;
-use function password_verify;
-
-use const PASSWORD_BCRYPT;
 
 final class Db extends AbstractChainableAdapter implements ListenerAggregateInterface
 {
@@ -130,8 +125,7 @@ final class Db extends AbstractChainableAdapter implements ListenerAggregateInte
             }
         }
 
-        if (! password_verify($credential, $userObject->getPassword())) {
-            // Password does not match
+        if (! $this->adapter->validateCredential($userObject, $credential)) {
             $event->setCode(AuthenticationResult::FAILURE_CREDENTIAL_INVALID)
                 ->setMessages(['Invalid username or password']);
             $this->setSatisfied(false);
@@ -161,18 +155,7 @@ final class Db extends AbstractChainableAdapter implements ListenerAggregateInte
 
     protected function updateUserPasswordHash(UserInterface $userObject, string $password): void
     {
-        $hash = explode('$', $userObject->getPassword());
-        if ($hash[2] === (string) $this->options->getPasswordCost()) {
-            return;
-        }
-        $userObject->setPassword(password_hash(
-            $password,
-            PASSWORD_BCRYPT,
-            [
-                'cost' => $this->options->getPasswordCost(),
-            ]
-        ));
-        $this->adapter->update($userObject);
+        $this->adapter->updateCredential($userObject, $password);
     }
 
     public function preProcessCredential(string $credential): mixed

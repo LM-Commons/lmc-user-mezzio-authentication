@@ -6,6 +6,7 @@ namespace LmcTest\User\Authentication\Options;
 
 use InvalidArgumentException;
 use Lmc\User\Authentication\Options\Options;
+use Lmc\User\Repository\UserInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -16,8 +17,8 @@ final class OptionsTest extends TestCase
     {
         $options = new Options();
         $this->assertFalse($options->getEnableUserState());
-        $this->assertEquals(1, $options->getDefaultUserState());
-        $this->assertEquals([null, 1], $options->getAllowedLoginStates());
+        $this->assertEquals(UserInterface::STATE_ACTIVE, $options->getDefaultUserState());
+        $this->assertEquals([UserInterface::STATE_ACTIVE], $options->getAllowedLoginStates());
         $this->assertEquals(14, $options->getPasswordCost());
         $this->assertEquals(['email'], $options->getAuthIdentityFields());
         $this->assertEquals([], $options->getAuthAdapters());

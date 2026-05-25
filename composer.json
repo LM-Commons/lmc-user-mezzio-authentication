@@ -13,7 +13,7 @@
     "laminas/laminas-authentication": "^2.13",
     "laminas/laminas-eventmanager": "^3.14",
     "laminas/laminas-session": "^2.12",
-    "lm-commons/lmc-user-repository": "^1.0",
+    "lm-commons/lmc-user-repository": "^1.3",
     "mezzio/mezzio-session": "^1.16",
     "psr/container": "^1.1 || ^2.0",
     "psr/http-factory": "^1.0"

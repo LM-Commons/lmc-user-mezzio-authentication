@@ -22,7 +22,6 @@
     </MissingOverrideAttribute>
     <MixedArgument>
       <code><![CDATA[$credential]]></code>
-      <code><![CDATA[$credential]]></code>
     </MixedArgument>
     <MixedAssignment>
       <code><![CDATA[$credential]]></code>
@@ -30,10 +29,6 @@
       <code><![CDATA[$session]]></code>
       <code><![CDATA[$storage['identity']]]></code>
     </MixedAssignment>
-    <PossiblyNullArgument>
-      <code><![CDATA[$userObject->getPassword()]]></code>
-      <code><![CDATA[$userObject->getPassword()]]></code>
-    </PossiblyNullArgument>
     <PossiblyNullReference>
       <code><![CDATA[getAttribute]]></code>
     </PossiblyNullReference>

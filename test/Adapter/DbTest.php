@@ -18,10 +18,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 
-use function password_hash;
-
-use const PASSWORD_BCRYPT;
-
 #[CoversClass(Db::class)]
 final class DbTest extends TestCase
 {
@@ -206,51 +202,11 @@ final class DbTest extends TestCase
     public function testAuthenticateValidCredential(): void
     {
         $user = $this->createMock(UserInterface::class);
-        $hash = password_hash('bar', PASSWORD_BCRYPT);
-        $user->expects($this->exactly(2))->method('getPassword')->willReturn($hash);
         $user->expects($this->once())->method('getIdentity')->willReturn('1');
-        $user->expects($this->once())->method('setPassword');
 
         $adapter = $this->createStub(AdapterInterface::class);
         $adapter->method('findByEmail')->willReturn($user);
-        $options = new Options([]);
-        $db      = new Db($adapter, $options);
-        $storage = [];
-        $session = $this->createMock(SessionInterface::class);
-        $session->expects($this->atLeastOnce())->method('get')->willReturnMap([
-            [ConfigProvider::LMC_USER_SESSION_STORAGE_NAMESPACE, $storage],
-        ]);
-        $session->expects($this->once())->method('regenerate');
-        $session->expects($this->atLeastOnce())->method('set');
-
-        $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects($this->atLeastOnce())->method('getAttribute')->willReturnMap([
-            [SessionMiddleware::SESSION_ATTRIBUTE, $session],
-            [SessionMiddleware::class, $session],
-        ]);
-        $request->expects($this->once())->method('getParsedBody')
-            ->willReturn([
-                'identity'   => 'foo',
-                'credential' => 'bar',
-            ]);
-        $event = new AdapterChainEvent();
-        $event->setRequest($request);
-        $this->assertTrue($db->authenticate($event));
-        $this->assertEquals(Result::SUCCESS, $event->getCode());
-        $this->assertEquals(['Authentication successful.'], $event->getMessages());
-        $this->assertEquals('1', $event->getIdentity());
-    }
-
-    public function testAuthenticateValidCredentialNoHashUpdate(): void
-    {
-        $user = $this->createMock(UserInterface::class);
-        $hash = password_hash('bar', PASSWORD_BCRYPT, ['cost' => 14]);
-        $user->expects($this->exactly(2))->method('getPassword')->willReturn($hash);
-        $user->expects($this->once())->method('getIdentity')->willReturn('1');
-        $user->expects($this->never())->method('setPassword');
-
-        $adapter = $this->createStub(AdapterInterface::class);
-        $adapter->method('findByEmail')->willReturn($user);
+        $adapter->method('validateCredential')->willReturn(true);
         $options = new Options([]);
         $db      = new Db($adapter, $options);
         $storage = [];
