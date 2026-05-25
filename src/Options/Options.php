@@ -32,7 +32,6 @@ final class Options extends AbstractOptions
 
     /** @var list<string|null|int> */
     protected array $allowedLoginStates = [UserInterface::STATE_ACTIVE];
-    protected int $passwordCost         = 14;
 
     /** @var string[]  */
     protected array $authIdentityFields = ['email'];
@@ -90,17 +89,6 @@ final class Options extends AbstractOptions
     public function setAuthIdentityFields(array $authIdentityFields): self
     {
         $this->authIdentityFields = $authIdentityFields;
-        return $this;
-    }
-
-    public function getPasswordCost(): int
-    {
-        return $this->passwordCost;
-    }
-
-    public function setPasswordCost(int $passwordCost): self
-    {
-        $this->passwordCost = $passwordCost;
         return $this;
     }
 

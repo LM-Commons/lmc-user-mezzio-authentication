@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LmcTest\User\Authentication\Options;
 
 use Lmc\User\Authentication\Exception\InvalidConfigException;
+use Lmc\User\Authentication\Options\Options;
 use Lmc\User\Authentication\Options\OptionsFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -28,8 +29,7 @@ final class OptionsFactoryTest extends TestCase
         $container->expects($this->once())
             ->method('get')->with('config')->willReturn($config);
         $factory = new OptionsFactory();
-        $options = $factory($container);
-        $this->assertEquals(14, $options->getPasswordCost());
+        $this->assertInstanceOf(Options::class, $factory($container));
     }
 
     /**
